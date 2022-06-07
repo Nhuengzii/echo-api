@@ -49,6 +49,11 @@ export class SongQueue{
         }
     }
 
+    skipSong(){
+        this.audioPlayer?.stop()
+        console.log("Song Skip")
+    }
+
     getCurrentSong(): Song{
         let currentSong = this.songList[this.pointer]
         return currentSong
