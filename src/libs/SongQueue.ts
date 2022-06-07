@@ -84,7 +84,7 @@ export class SongQueue{
         console.log(currentAudioResource)
         const isSkip = (currentAudioResource.playbackDuration <= (songDuration * 0.8) * 1000)
         const info = await this.getCurrentSong().getSongInfo()
-        await saveSongRequest(songRequestDB, info, isSkip)
+        await saveSongRequest(songRequestDB, info, isSkip, currentAudioResource.playbackDuration)
 
 
 
