@@ -1,13 +1,13 @@
 import { Client, Intents, Snowflake } from "discord.js"
 import { SongQueue } from "./libs/SongQueue"
 import {addSpeechEvent, resolveSpeechWithWitai} from "discord-speech-recognition"
-
+import {config} from "dotenv"
 
 
 
 //Setup discord client
-
-const { token } = require('../bot-config.json')
+config()
+const token = process.env.TOKEN
 
 const client: Client = new Client({
     intents:[
@@ -28,7 +28,6 @@ export {queueManager}
 require('./event/ready')(client)
 require('./event/onMessageCreate')(client)
 require('./event/speech')(client)
-
 
 
 // login
