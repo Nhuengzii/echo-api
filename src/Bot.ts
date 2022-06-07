@@ -1,6 +1,6 @@
 import { Client, Intents, Snowflake } from "discord.js"
 import { SongQueue } from "./libs/SongQueue"
-
+import {addSpeechEvent, resolveSpeechWithWitai} from "discord-speech-recognition"
 
 
 
@@ -27,6 +27,7 @@ export {queueManager}
 //setup event
 require('./event/ready')(client)
 require('./event/onMessageCreate')(client)
+require('./event/speech')(client)
 
 
 

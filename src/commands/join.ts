@@ -18,7 +18,8 @@ module.exports = async (client: Client, requester: GuildMember, message: Message
     const voiceConnection = joinVoiceChannel({
         guildId: requester.guild.id,
         channelId: requester.voice.channel.id,
-        adapterCreator: requester.guild.voiceAdapterCreator
+        adapterCreator: requester.guild.voiceAdapterCreator,
+        selfDeaf: false
     })
 
     voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
