@@ -1,10 +1,10 @@
 import { getVoiceConnection, VoiceConnection } from "@discordjs/voice";
 import { Client, GuildMember, MessageEmbed, TextChannel } from "discord.js";
 import {video_basic_info, search} from 'play-dl'
+import { QueueManager } from "../Bot";
 import { Song, SongInfo } from "../libs/Song";
 import { SongQueue } from "../libs/SongQueue";
-import { QueueManager } from "../QueueManager";
-module.exports = async (client: Client, requester: GuildMember, querry: string, textChannel: TextChannel | undefined): Promise<void> => {
+module.exports = async (client: Client, requester: GuildMember, querry: string, textChannel: TextChannel | undefined, queueManager: QueueManager): Promise<void> => {
 
     if(!requester.voice){
         if(textChannel != undefined){
@@ -35,12 +35,10 @@ module.exports = async (client: Client, requester: GuildMember, querry: string, 
         url = querry;
     }
 
-    const queueManager = QueueManager
-    const songQueueList = queueManager.Instance().songQueueList
-    if(!songQueueList[requester.guild.id]){
-        songQueueList[requester.guild.id] = new SongQueue(requester.guild.id, voiceConnection)
+    if(!queueManager[requester.guild.id]){
+        queueManager[requester.guild.id] = new SongQueue(requester.guild.id, voiceConnection)
     }
-    const songQueue = songQueueList[requester.guild.id]
+    const songQueue = queueManager[requester.guild.id]
 
 
     const song: Song = new Song(url, requester)

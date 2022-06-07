@@ -1,5 +1,5 @@
 import { AudioPlayer, AudioResource, createAudioPlayer, getVoiceConnection, NoSubscriberBehavior, VoiceConnection, AudioPlayerState, AudioPlayerStatus } from "@discordjs/voice";
-import { Snowflake, MessageEmbed } from "discord.js";
+import { Snowflake, MessageEmbed, TextChannel } from "discord.js";
 import { Song, SongInfo } from "./Song";
 
 export class SongQueue{
@@ -32,6 +32,23 @@ export class SongQueue{
     getCurrentSong(): Song{
         let currentSong = this.songList[this.pointer]
         return currentSong
+    }
+
+    async showQueue(textChannel: TextChannel): Promise<void>{
+        const embed = new MessageEmbed()
+
+        for(let i: number = 0; i < this.songList.length; i++){
+            const info = await this.songList[i].getSongInfo()
+            if(i == this.pointer){
+                embed.addField(`--> ${i}. ** ${info.title} **`, `--------------------`, false)
+                embed.setThumbnail(info.thumbnail)
+            }
+            else{
+                embed.addField(`${i}. ${info.title}`,`--------------------` , false)
+            }
+        }
+        await textChannel.send({embeds: [embed]})
+
     }
 }
 

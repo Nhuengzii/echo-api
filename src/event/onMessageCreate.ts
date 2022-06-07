@@ -1,4 +1,5 @@
 import { Client, CommandInteraction } from "discord.js";
+import { queueManager } from "../Bot";
 
 
 
@@ -16,7 +17,11 @@ module.exports =  (client: Client): void => {
 
             case "-p":
                 const querry: string = message.content.split(' ', 2)[1]
-                await require('../commands/play')(client, message.member, querry, message.channel)
+                await require('../commands/play')(client, message.member, querry, message.channel, queueManager)
+                break
+            case "-q":
+                await require('../commands/showQueue')(message.channel, queueManager)
+                break         
             default:
                 return;
         }

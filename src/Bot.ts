@@ -1,4 +1,5 @@
-import { Client, Intents } from "discord.js"
+import { Client, Intents, Snowflake } from "discord.js"
+import { SongQueue } from "./libs/SongQueue"
 
 
 
@@ -15,6 +16,10 @@ const client: Client = new Client({
         Intents.FLAGS.GUILD_VOICE_STATES
     ]
 })
+
+export type QueueManager = {[guildId: string]: SongQueue}
+const queueManager: QueueManager = {}
+export {queueManager}
 
 
 
