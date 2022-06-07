@@ -6,6 +6,7 @@ export class Song{
     url: string
     requester: GuildMember
     info: SongInfo | undefined;
+    audioResource: AudioResource | undefined
     constructor(url: string, requester: GuildMember){
         this.url = url;
         this.requester = requester;
@@ -19,7 +20,10 @@ export class Song{
             title: info.title || "Unknow Title",
             thumbnail: info.thumbnails[0].url,
             duration: info.durationInSec,
-            requesterName: this.requester.displayName
+            requesterName: this.requester.displayName,
+            requester: this.requester,
+            youtubeId: info.id || "Unknow Id"
+
         }
         this.info = songInfo
         return songInfo
@@ -27,12 +31,18 @@ export class Song{
 
 
     async getAudioResource(): Promise<AudioResource>{
+
+        if(this.audioResource){
+            return this.audioResource
+        }
+
         let audioStream = await stream(this.url)
         let audio: AudioResource = createAudioResource(audioStream.stream, {
             inputType: audioStream.type,
             inlineVolume: true
         })
         audio.volume?.setVolume(0.1)
+        this.audioResource = audio
 
         return audio
     }
@@ -43,7 +53,9 @@ export interface SongInfo{
     title: string,
     thumbnail: string,
     duration: number,
-    requesterName: string
+    requesterName: string,
+    requester: GuildMember,
+    youtubeId: string
 }
 
 

@@ -2,6 +2,9 @@ import { Client, Intents, Snowflake } from "discord.js"
 import { SongQueue } from "./libs/SongQueue"
 import {addSpeechEvent, resolveSpeechWithWitai} from "discord-speech-recognition"
 import {config} from "dotenv"
+import firebase from 'firebase/compat/app'; 
+import 'firebase/compat/firestore';
+import { SongInfo } from './libs/Song';
 
 
 
@@ -21,7 +24,22 @@ export type QueueManager = {[guildId: string]: SongQueue}
 const queueManager: QueueManager = {}
 export {queueManager}
 
+// set up databasse
+const firebaseConfig = {
+    apiKey: "AIzaSyDs0_yOFtBuMN95IbQOWN8lJ5n4WtalfUA",
+    authDomain: "echo-a449b.firebaseapp.com",
+    projectId: "echo-a449b",
+    storageBucket: "echo-a449b.appspot.com",
+    messagingSenderId: "128837416050",
+    appId: "1:128837416050:web:d03f9b8bfa6f505e657eeb",
+    measurementId: "G-2LNJG32VLL"
+  };
+firebase.initializeApp(firebaseConfig)
 
+const firestore = firebase.firestore();
+const songRequestDB = firestore.collection("SongRequest")
+
+export {firebase, songRequestDB}
 
 
 //setup event

@@ -2,6 +2,8 @@ import { AudioPlayer, AudioResource, createAudioPlayer, getVoiceConnection, NoSu
 import { Snowflake, MessageEmbed, TextChannel } from "discord.js";
 import { Song, SongInfo } from "./Song";
 import {Queue} from "queue-typescript"
+import { saveSongRequest } from "./SongRequestDatabase";
+import { songRequestDB } from "../Bot";
 const Gtts = require('gtts')
 
 export class SongQueue{
@@ -75,6 +77,17 @@ export class SongQueue{
     }
 
     async nextSong(){
+
+        const currentSong = await this.getCurrentSong()
+        const songDuration = (await currentSong.getSongInfo()).duration
+        let currentAudioResource = await currentSong.getAudioResource()
+        console.log(currentAudioResource)
+        const isSkip = (currentAudioResource.playbackDuration <= (songDuration * 0.8) * 1000)
+        const info = await this.getCurrentSong().getSongInfo()
+        await saveSongRequest(songRequestDB, info, isSkip)
+
+
+
         this.pointer += 1;
         if(this.pointer >= (this.songList.length)){
             this.audioPlayer = undefined;
