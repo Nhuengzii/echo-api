@@ -1,22 +1,60 @@
-import { AudioPlayer, AudioResource, createAudioPlayer, getVoiceConnection, NoSubscriberBehavior, VoiceConnection, AudioPlayerState, AudioPlayerStatus } from "@discordjs/voice";
+import { AudioPlayer, AudioResource, createAudioPlayer, getVoiceConnection, NoSubscriberBehavior, VoiceConnection, AudioPlayerState, AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
 import { Snowflake, MessageEmbed, TextChannel } from "discord.js";
 import { Song, SongInfo } from "./Song";
+import {Queue} from "queue-typescript"
+const Gtts = require('gtts')
 
 export class SongQueue{
     guildId: Snowflake;
     audioPlayer: AudioPlayer | undefined
     songList: Song[] = []
+    notificationQueue = new Queue<AudioResource>()
+    notificationPlayer: AudioPlayer
     pointer: number = 0
     voiceConnection: VoiceConnection;
     constructor (guildId: Snowflake, voiceConnection: VoiceConnection) {
         this.guildId = guildId
         this.voiceConnection = voiceConnection
+        this.notificationPlayer = createAudioPlayer({
+            behaviors: {
+                noSubscriber: NoSubscriberBehavior.Stop
+            }
+        })
     }
 
     async addSong(song: Song){
         this.songList.push(song)
-        if(!this.audioPlayer) 
-        {await this.playSong()}
+        if(!this.audioPlayer) {await this.playSong()}
+        this.addNotification(`เพิ่มเพลง ${(await song.getSongInfo()).title} ค่ะ`)
+        
+    }
+
+    addNotification(text: string){
+        const audioResource: AudioResource = createAudioResource((new Gtts(text, "th")).stream())
+        this.notificationQueue.append(audioResource)   
+        if(this.notificationPlayer.state.status == AudioPlayerStatus.Idle){
+            this.sayNotification()
+        }
+    }
+
+    sayNotification(){
+        const audioResource = this.notificationQueue.dequeue()
+        this.voiceConnection.subscribe(this.notificationPlayer)
+        this.notificationPlayer.play(audioResource)
+        this.notificationPlayer.on(AudioPlayerStatus.Idle, () => {
+            if(this.notificationQueue.length == 0){
+                if(!this.audioPlayer) return;
+                this.voiceConnection.subscribe(this.audioPlayer)
+                this.notificationPlayer = createAudioPlayer({
+                    behaviors: {
+                        noSubscriber: NoSubscriberBehavior.Stop
+                    }
+                })
+            }
+            else{
+                this.sayNotification()
+            }
+        })
     }
 
     async playSong(){

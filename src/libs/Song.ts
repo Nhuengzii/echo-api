@@ -28,7 +28,7 @@ export class Song{
             inputType: audioStream.type,
             inlineVolume: true
         })
-        audio.volume?.setVolume(0.05)
+        audio.volume?.setVolume(0.1)
 
         return audio
     }
