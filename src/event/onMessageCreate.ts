@@ -6,7 +6,7 @@ import { queueManager } from "../Bot";
 
 module.exports =  (client: Client): void => {
     client.on('messageCreate', async (message) => {
-        const PREFIX = "+"
+        const PREFIX = "-"
         if(!message.content.startsWith(PREFIX)) return
         
         const commandName: string = message.content.split(' ', 1)[0]
