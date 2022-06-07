@@ -1,5 +1,6 @@
-import { getVoiceConnection } from "@discordjs/voice";
+import { AudioPlayer, AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, getVoiceConnection, NoSubscriberBehavior } from "@discordjs/voice";
 import { Client, Snowflake, TextChannel } from "discord.js";
+const Gtts = require('gtts')
 
 module.exports = async (guildId: Snowflake, textChannel: TextChannel | undefined) => {
     const voiceConnection = getVoiceConnection(guildId)
@@ -7,7 +8,22 @@ module.exports = async (guildId: Snowflake, textChannel: TextChannel | undefined
         textChannel?.send("I'm not in any voice channel")
         return
     }
-    voiceConnection.destroy()
-    textChannel?.send("Bye Bye")
+
+    const audioPlayer: AudioPlayer = createAudioPlayer({
+        behaviors: {
+            noSubscriber: NoSubscriberBehavior.Stop
+        }
+    })
+    const speechStream = new Gtts("ลาก่อนค่ะ", "th")
+    const audioResource: AudioResource = createAudioResource(speechStream.stream())
+    voiceConnection.subscribe(audioPlayer)
+    audioPlayer.play(audioResource)
+    audioPlayer.on(AudioPlayerStatus.Idle, async () => {
+        voiceConnection.destroy()
+        await textChannel?.send("Bye Bye")
+    })
+
+
+
     
 }
