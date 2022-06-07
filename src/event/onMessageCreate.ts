@@ -21,7 +21,10 @@ module.exports =  (client: Client): void => {
                 break
             case "-q":
                 await require('../commands/showQueue')(message.channel, queueManager)
-                break         
+                break      
+            case "-l":
+                await require('../commands/leave')(message.guildId, message.channel)   
+                break
             default:
                 return;
         }

@@ -1,5 +1,6 @@
 import { Client, GuildMember, Message } from "discord.js";
-import {joinVoiceChannel, getVoiceConnection} from "@discordjs/voice"
+import {joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus} from "@discordjs/voice"
+import { queueManager } from "../Bot";
 
 
 module.exports = async (client: Client, requester: GuildMember, message: Message | undefined): Promise<void> => {
@@ -18,6 +19,16 @@ module.exports = async (client: Client, requester: GuildMember, message: Message
         guildId: requester.guild.id,
         channelId: requester.voice.channel.id,
         adapterCreator: requester.guild.voiceAdapterCreator
+    })
+
+    voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
+        console.log("Bot disconnected!")
+        const voiceConnection = getVoiceConnection(requester.guild.id)
+        voiceConnection?.destroy()
+        if(queueManager[requester.guild.id]){
+            delete queueManager[requester.guild.id]
+            console.log("Queue destroyed")
+        }
     })
 
     if((message != undefined) && (voiceConnection)){
