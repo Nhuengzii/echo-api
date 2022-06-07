@@ -31,6 +31,8 @@ module.exports =  (client: Client): void => {
                 break
             case `${PREFIX}currentSong`:
                 await require('../commands/currentSong')(client, message.guildId, message.channel)
+            case `${PREFIX}stsp`:
+                await require('../commands/stopSpeaking')(client, message.guildId)
             default:
                 return;
         }

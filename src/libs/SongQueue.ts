@@ -100,6 +100,14 @@ export class SongQueue{
         }
     }
 
+    stopSpeaking(){
+        if(!(this.notificationPlayer.state.status == AudioPlayerStatus.Playing)){
+            return
+        }
+
+        this.notificationPlayer.stop()
+    }
+
     skipSong(){
         this.audioPlayer?.stop()
         console.log("Song Skip")
