@@ -10,10 +10,13 @@ module.exports =  (client: Client): void => {
         const commandName: string = message.content.split(' ', 1)[0]
 
         switch(commandName){
-            case "-join" || "j":
+            case "-j":
                 await require('../commands/join')(client, message.member, message)
                 break;
 
+            case "-p":
+                const querry: string = message.content.split(' ', 2)[1]
+                await require('../commands/play')(client, message.member, querry, message.channel)
             default:
                 return;
         }
