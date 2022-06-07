@@ -29,6 +29,8 @@ module.exports =  (client: Client): void => {
             case `${PREFIX}sk`:
                 await require('../commands/skip')(message.member?.guild.id, message.channel)
                 break
+            case `${PREFIX}currentSong`:
+                await require('../commands/currentSong')(client, message.guildId, message.channel)
             default:
                 return;
         }

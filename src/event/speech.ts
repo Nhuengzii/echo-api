@@ -23,5 +23,8 @@ module.exports = async (client: Client) => {
         else if(content.startsWith("ออกไป")){
             await require('../commands/leave')(voicemessage.channel.guild.id, undefined)
         }
+        else if(content.startsWith("เพลงอะไรอ่ะ")){
+            await require('../commands/currentSong')(client, voicemessage.member?.guild.id, undefined)
+        }
     })
 }

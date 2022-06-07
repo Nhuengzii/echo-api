@@ -5,19 +5,23 @@ import {stream, video_info, YouTubeVideo} from 'play-dl'
 export class Song{
     url: string
     requester: GuildMember
+    info: SongInfo | undefined;
     constructor(url: string, requester: GuildMember){
         this.url = url;
         this.requester = requester;
     }
 
     async getSongInfo(): Promise<SongInfo>{
+
+        if(this.info) {return this.info}
         const info: YouTubeVideo = (await video_info(this.url)).video_details
         const songInfo: SongInfo = {
             title: info.title || "Unknow Title",
             thumbnail: info.thumbnails[0].url,
-            duration: info.durationInSec
+            duration: info.durationInSec,
+            requesterName: this.requester.displayName
         }
-
+        this.info = songInfo
         return songInfo
     }
 
@@ -39,6 +43,7 @@ export interface SongInfo{
     title: string,
     thumbnail: string,
     duration: number,
+    requesterName: string
 }
 
 
