@@ -3,6 +3,8 @@ import { config } from "dotenv";
 import { getConversationDatas, IConversationData, saveConversationData } from "../libs/ConversationDatabase"
 import {queueManager} from "../Bot"
 import {Configuration, OpenAIApi} from 'openai'
+import { SongQueue } from "../libs/SongQueue";
+import { getVoiceConnection } from "@discordjs/voice";
 const Translator = require('translate')
 Translator.key = "AIzaSyCC4NjNuhOP-_K3pZtMnbQoawoyAzYjYkU"
 
@@ -21,6 +23,7 @@ config()
 
 module.exports = async (client: Client, guildId: string, userId: string, inputRaw: string, textChannel: TextChannel | undefined) => {
     
+
     const conversationDatas: IConversationData[] = await getConversationDatas(userId, 100)
     let prompt = conversationDataToPrompt(conversationDatas)
     console.log(prompt)
@@ -51,6 +54,13 @@ module.exports = async (client: Client, guildId: string, userId: string, inputRa
     textChannel?.send(outputTranslate)
     if(!textChannel){
         if(queueManager[guildId]){
+            const songQueue = queueManager[guildId]
+            songQueue.addNotification(outputTranslate)
+        }
+        else{
+            const voiceConnection = getVoiceConnection(guildId)
+            if(!voiceConnection){console.log("no voice connection in Chat.ts"); return;}
+            queueManager[guildId] = new SongQueue(guildId, voiceConnection)
             const songQueue = queueManager[guildId]
             songQueue.addNotification(outputTranslate)
         }
