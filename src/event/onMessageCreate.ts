@@ -33,6 +33,10 @@ module.exports =  (client: Client): void => {
                 await require('../commands/currentSong')(client, message.guildId, message.channel)
             case `${PREFIX}stsp`:
                 await require('../commands/stopSpeaking')(client, message.guildId)
+            case `${PREFIX}chat`:
+                const inputRaw = message.content.split(`${PREFIX}chat`)[1].trim()
+                if(inputRaw.length == 0) return;
+                await require('../commands/chat')(client, message.member?.guild.id, message.author.id, inputRaw, message.channel)
             default:
                 return;
         }

@@ -38,8 +38,9 @@ firebase.initializeApp(firebaseConfig)
 
 const firestore = firebase.firestore();
 const songRequestDB = firestore.collection("SongRequest")
+const conversationDB = firestore.collection("Conversation")
 
-export {firebase, songRequestDB}
+export {firebase, songRequestDB, conversationDB}
 
 
 //setup event
