@@ -23,6 +23,7 @@
     "gtts": "^0.2.1",
     "libsodium-wrappers": "^0.7.10",
     "openai": "^3.0.0",
+    "opusscript": "^0.0.8",
     "play-dl": "^1.9.5",
     "queue-typescript": "^1.0.1",
     "translate": "^1.4.1",

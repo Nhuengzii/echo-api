@@ -15,7 +15,6 @@ module.exports =  (client: Client): void => {
             case `${PREFIX}j`:
                 await require('../commands/join')(client, message.member, message)
                 break;
-
             case `${PREFIX}p`:
                 const querry: string = message.content.split(' ', 2)[1]
                 await require('../commands/play')(client, message.member, querry, message.channel, queueManager)
@@ -35,6 +34,7 @@ module.exports =  (client: Client): void => {
                 await require('../commands/stopSpeaking')(client, message.guildId)
             case `${PREFIX}chat`:
                 const inputRaw = message.content.split(`${PREFIX}chat`)[1].trim()
+                console.log('input raw is ' + inputRaw)
                 if(inputRaw.length == 0) return;
                 await require('../commands/chat')(client, message.member?.guild.id, message.author.id, inputRaw, message.channel)
             default:

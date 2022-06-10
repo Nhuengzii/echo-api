@@ -22,11 +22,8 @@ const openai = new OpenAIApi(configuration);
 config()
 
 module.exports = async (client: Client, guildId: string, userId: string, inputRaw: string, textChannel: TextChannel | undefined) => {
-    
-
     const conversationDatas: IConversationData[] = await getConversationDatas(userId, 100)
     let prompt = conversationDataToPrompt(conversationDatas)
-    console.log(prompt)
 
     const inputTranslate: string = await Translator(inputRaw, {from: 'th', to: 'en'})
     prompt += `Human: ${inputTranslate}\nBot: `
@@ -52,7 +49,7 @@ module.exports = async (client: Client, guildId: string, userId: string, inputRa
     const outputTranslate = await Translator(outputRaw, {from: 'en', to: 'th'})
 
     textChannel?.send(outputTranslate)
-    if(!textChannel){
+    if(true){
         if(queueManager[guildId]){
             const songQueue = queueManager[guildId]
             songQueue.addNotification(outputTranslate)

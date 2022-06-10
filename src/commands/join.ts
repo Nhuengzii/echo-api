@@ -24,8 +24,6 @@ module.exports = async (client: Client, requester: GuildMember, message: Message
 
     voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
         console.log("Bot disconnected!")
-        const voiceConnection = getVoiceConnection(requester.guild.id)
-        voiceConnection?.destroy()
         if(queueManager[requester.guild.id]){
             delete queueManager[requester.guild.id]
             console.log("Queue destroyed")

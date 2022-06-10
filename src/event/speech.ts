@@ -29,8 +29,25 @@ module.exports = async (client: Client) => {
         else if(content.startsWith("หยุดพูด")){
             await require('../commands/stopSpeaking')(client, voicemessage.member?.guild.id)
         }
-        else if(content.startsWith("เอคโค่") || content.startsWith("Echo")){
-            await require('../commands/chat')(client, voicemessage.member?.guild.id, voicemessage.author.id, content, undefined)
+        else if(content.startsWith("เอคโค่") || content.startsWith("Echo") || content.startsWith("Eco")){
+
+            let question = ""
+
+            if(content.startsWith("เอคโค่")){
+                question = content.split("เอคโค่")[1]
+            }
+            else if(content.startsWith("Echo")){
+                question = content.split("Echo")[1]
+            }
+            else if(content.startsWith("Eco")){
+                question = content.split("Eco")[1]
+            }
+
+            if(question.length == 0){
+                return
+            }
+
+            await require('../commands/chat')(client, voicemessage.member?.guild.id, voicemessage.author.id, question, undefined)
         }
     })
 }
