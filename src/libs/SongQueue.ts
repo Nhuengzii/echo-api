@@ -32,7 +32,11 @@ export class SongQueue{
     }
 
     addNotification(text: string){
-        const audioResource: AudioResource = createAudioResource((new Gtts(text, "th")).stream())
+        let audio = new Gtts(text, "th")
+        let audioResource: AudioResource = createAudioResource(audio.stream(), {
+            inputType: audio.type,
+            inlineVolume: true
+        })
         this.notificationQueue.append(audioResource)   
         if(this.notificationPlayer.state.status == AudioPlayerStatus.Idle){
             this.sayNotification()

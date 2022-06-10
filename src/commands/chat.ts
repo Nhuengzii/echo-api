@@ -1,4 +1,4 @@
-import { Client, Snowflake, TextChannel } from "discord.js";
+import { Client, Guild, GuildMember, Snowflake, TextChannel } from "discord.js";
 import { config } from "dotenv";
 import { getConversationDatas, IConversationData, saveConversationData } from "../libs/ConversationDatabase"
 import {queueManager} from "../Bot"
@@ -21,8 +21,8 @@ const openai = new OpenAIApi(configuration);
 
 config()
 
-module.exports = async (client: Client, guildId: string, userId: string, inputRaw: string, textChannel: TextChannel | undefined) => {
-    const conversationDatas: IConversationData[] = await getConversationDatas(userId, 100)
+module.exports = async (client: Client, guildId: string, userMember: GuildMember, inputRaw: string, textChannel: TextChannel | undefined) => {
+    const conversationDatas: IConversationData[] = await getConversationDatas(userMember.id, 100)
     let prompt = conversationDataToPrompt(conversationDatas)
 
     const inputTranslate: string = await Translator(inputRaw, {from: 'th', to: 'en'})
@@ -49,24 +49,27 @@ module.exports = async (client: Client, guildId: string, userId: string, inputRa
     const outputTranslate = await Translator(outputRaw, {from: 'en', to: 'th'})
 
     textChannel?.send(outputTranslate)
-    if(true){
-        if(queueManager[guildId]){
-            const songQueue = queueManager[guildId]
-            songQueue.addNotification(outputTranslate)
-        }
-        else{
-            const voiceConnection = getVoiceConnection(guildId)
-            if(!voiceConnection){console.log("no voice connection in Chat.ts"); return;}
-            queueManager[guildId] = new SongQueue(guildId, voiceConnection)
-            const songQueue = queueManager[guildId]
-            songQueue.addNotification(outputTranslate)
-        }
+  
+
+    let speechText = outputTranslate
+    if(textChannel) {speechText = `คุณ ${userMember.displayName} ถามว่า${inputRaw}  ฉันขอตอบว่า${outputTranslate}`}
+    if(queueManager[guildId]){
+        const songQueue = queueManager[guildId]
+        songQueue.addNotification(speechText)
     }
+    else{
+        const voiceConnection = getVoiceConnection(guildId)
+        if(!voiceConnection){console.log("no voice connection in Chat.ts"); return;}
+        queueManager[guildId] = new SongQueue(guildId, voiceConnection)
+        const songQueue = queueManager[guildId]
+        songQueue.addNotification(speechText)
+    }
+
 
     const conversationData: IConversationData = {
         createdAt: (new Date()),
         guildId: guildId,
-        userId: userId,
+        userId: userMember.id,
         inputRaw: inputRaw,
         inputTranslate: inputTranslate,
         outputRaw: outputRaw,

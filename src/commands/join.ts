@@ -1,6 +1,7 @@
 import { Client, GuildMember, Message } from "discord.js";
 import {joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus} from "@discordjs/voice"
 import { queueManager } from "../Bot";
+import { SongQueue } from "../libs/SongQueue";
 
 
 module.exports = async (client: Client, requester: GuildMember, message: Message | undefined): Promise<void> => {
@@ -21,6 +22,8 @@ module.exports = async (client: Client, requester: GuildMember, message: Message
         adapterCreator: requester.guild.voiceAdapterCreator,
         selfDeaf: false
     })
+
+    queueManager[requester.guild.id] = new SongQueue(requester.guild.id, voiceConnection)
 
     voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
         console.log("Bot disconnected!")

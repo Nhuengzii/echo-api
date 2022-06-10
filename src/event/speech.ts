@@ -47,7 +47,7 @@ module.exports = async (client: Client) => {
                 return
             }
 
-            await require('../commands/chat')(client, voicemessage.member?.guild.id, voicemessage.author.id, question, undefined)
+            await require('../commands/chat')(client, voicemessage.member?.guild.id, voicemessage.member, question, undefined)
         }
     })
 }

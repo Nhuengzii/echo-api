@@ -36,7 +36,7 @@ module.exports =  (client: Client): void => {
                 const inputRaw = message.content.split(`${PREFIX}chat`)[1].trim()
                 console.log('input raw is ' + inputRaw)
                 if(inputRaw.length == 0) return;
-                await require('../commands/chat')(client, message.member?.guild.id, message.author.id, inputRaw, message.channel)
+                await require('../commands/chat')(client, message.member?.guild.id, message.member, inputRaw, message.channel)
             default:
                 return;
         }
